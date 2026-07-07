@@ -5,6 +5,7 @@ import {extractTextFromPDF} from '../utils/pdfParser.js';
 import {chunkText} from '../utils/textChunker.js';
 import fs from 'fs/promises';
 import mongoose from "mongoose";
+import cloudinary from "../config/cloudinary.js";
 
 // @desc Upload a document
 // @route POST /api/documents/
@@ -28,9 +29,16 @@ export const uploadDocument=async(req,res,next)=>{
                 statusCode:400
             });
         }
-        // construct url for the uploaded file
-        const baseUrl=`http://localhost:${process.env.PORT || 8000}`;
-        const fileUrl=`${baseUrl}/uploads/documents/${req.file.filename}`;
+
+        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "raw",
+        folder: "documents",
+        use_filename: true,
+        unique_filename: false,
+        });
+
+        const fileUrl = uploadResult.secure_url;
+        const publicId = uploadResult.public_id;
 
         //Create Document entry in the database
         const document=await Document.create({
@@ -38,6 +46,7 @@ export const uploadDocument=async(req,res,next)=>{
             title,
             fileName:req.file.originalname,
             filePath:fileUrl,
+            cloudinaryPublicId: publicId,
             fileSize:req.file.size,
             status: 'processing'
         });
@@ -85,10 +94,9 @@ const processPDF=async(documentId,filePath)=>{
             await Document.findByIdAndUpdate(documentId,{status:'failed'});
     }
     finally {
-        // await fs.unlink(filePath).catch((err)=>{
-        //     console.error(`Error deleting file ${filePath}:`,err);
-        // }
-        
+        await fs.unlink(filePath).catch((err) => {
+            console.error(`Error deleting file ${filePath}:`, err);
+        });
     }
 };
 
@@ -165,8 +173,13 @@ export const deleteDocument=async(req,res,next)=>{
             statusCode:404
         });
     }
-    await fs.unlink(document.filePath).catch(()=>{});
-    // delete the file from uploads folder;
+    if (document.cloudinaryPublicId) {
+      await cloudinary.uploader.destroy(document.cloudinaryPublicId, {
+        resource_type: 'raw',
+      }).catch((err) => {
+        console.error('Error deleting Cloudinary asset:', err);
+      });
+    }
     await document.deleteOne();
     res.status(200).json({
         success:true,
