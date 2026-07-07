@@ -1,0 +1,196 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../../services/authService";
+import { BrainCircuit, User, Mail, Lock, ArrowRight } from "lucide-react";
+import toast from "react-hot-toast";
+
+const RegisterPage = () => {
+  // Form states
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // UI states
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      // Backend ko data bhej rahe hain jaisa authService me defined hai
+      const response = await authService.register(username, email, password);
+
+      console.log("Registration Response:", response);
+
+      toast.success("Account created successfully!");
+
+      // Account banne ke baad user ko login page par bhej rahe hain
+      navigate("/login");
+    } catch (error) {
+      console.error("Register Page Error:", error);
+      setError(error.message || "Registration failed. Please try again.");
+      toast.error("Registration failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    // Background and full-screen centering layout
+    <div className="min-h-screen w-full bg-slate-50 flex flex-col justify-center items-center p-4 antialiased">
+      {/* Main Register Card Container */}
+      <div className="w-full max-w-[440px] bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-10 flex flex-col items-center">
+        {/* Header Section */}
+        <div className="flex flex-col items-center text-center mb-8">
+          {/* Green AI Brain Icon */}
+          <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-5">
+            <BrainCircuit size={28} className="text-white" strokeWidth={2} />
+          </div>
+
+          <h1 className="text-[26px] font-semibold text-slate-900 tracking-tight mb-1">
+            Create an account
+          </h1>
+          <p className="text-sm text-slate-500">
+            Start your AI-powered learning experience
+          </p>
+        </div>
+
+        {/* Register Form */}
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
+          {/* Username Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
+              Username
+            </label>
+            <div className="relative">
+              {/* Dynamic Icon Color based on focus */}
+              <div
+                className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
+                  focusedField === "username"
+                    ? "text-emerald-500"
+                    : "text-slate-400"
+                }`}
+              >
+                <User size={20} strokeWidth={1.8} />
+              </div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onFocus={() => setFocusedField("username")}
+                onBlur={() => setFocusedField(null)}
+                placeholder="yourusername"
+                required
+                className={`w-full pl-12 pr-4 py-3 bg-white border rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all duration-200 ${
+                  focusedField === "username"
+                    ? "border-emerald-500 ring-2 ring-emerald-500/10"
+                    : "border-slate-200"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Email Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
+              Email
+            </label>
+            <div className="relative">
+              <div
+                className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
+                  focusedField === "email"
+                    ? "text-emerald-500"
+                    : "text-slate-400"
+                }`}
+              >
+                <Mail size={20} strokeWidth={1.8} />
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocusedField("email")}
+                onBlur={() => setFocusedField(null)}
+                placeholder="you@example.com"
+                required
+                className={`w-full pl-12 pr-4 py-3 bg-white border rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all duration-200 ${
+                  focusedField === "email"
+                    ? "border-emerald-500 ring-2 ring-emerald-500/10"
+                    : "border-slate-200"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Password Field */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
+              Password
+            </label>
+            <div className="relative">
+              <div
+                className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
+                  focusedField === "password"
+                    ? "text-emerald-500"
+                    : "text-slate-400"
+                }`}
+              >
+                <Lock size={20} strokeWidth={1.8} />
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setFocusedField("password")}
+                onBlur={() => setFocusedField(null)}
+                placeholder="••••••••"
+                required
+                className={`w-full pl-12 pr-4 py-3 bg-white border rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none transition-all duration-200 ${
+                  focusedField === "password"
+                    ? "border-emerald-500 ring-2 ring-emerald-500/10"
+                    : "border-slate-200"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Error Message Alert */}
+          {error && (
+            <div className="text-sm bg-red-50 text-red-600 px-4 py-2 rounded-xl border border-red-100">
+              {error}
+            </div>
+          )}
+
+          {/* Create Account Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full mt-2 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-emerald-500/10 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            <span>{loading ? "Creating account..." : "Create account"}</span>
+            {!loading && <ArrowRight size={18} strokeWidth={2} />}
+          </button>
+        </form>
+
+        {/* Footer Redirect Link */}
+        <div className="mt-8 text-sm text-slate-500">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-emerald-600 hover:text-emerald-700 font-semibold underline-offset-4 hover:underline transition-colors"
+          >
+            Sign in
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage;
