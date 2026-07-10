@@ -27,14 +27,27 @@ const app=express();
 connectDB();
 
 
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173", // Local testing ke liye
+    "http://localhost:3000"
+];
+
 app.use(
     cors({
-        origin:"*",
-        methods:["GET","POST","PUT","DELETE"],
-        allowedHeaders:["Content-Type", "Authorization"],
+        origin: function (origin, callback) {
+            // Agar request bina origin ke ho (jaise Postman) ya allowed list mein ho
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true
     })
-)
+);
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
