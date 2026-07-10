@@ -22,6 +22,26 @@ const RegisterPage = () => {
     setError("");
     setLoading(true);
 
+    // Frontend validation
+    if (username.trim().length < 3) {
+      setError("Username must be at least 3 characters long");
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      setLoading(false);
+      return;
+    }
+
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      setLoading(false);
+      return;
+    }
+
     try {
       // Backend ko data bhej rahe hain jaisa authService me defined hai
       const response = await authService.register(username, email, password);
@@ -35,7 +55,7 @@ const RegisterPage = () => {
     } catch (error) {
       console.error("Register Page Error:", error);
       setError(error.message || "Registration failed. Please try again.");
-      toast.error("Registration failed!");
+      toast.error(error.message || "Registration failed!");
     } finally {
       setLoading(false);
     }

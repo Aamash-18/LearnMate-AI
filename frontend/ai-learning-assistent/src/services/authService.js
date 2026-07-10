@@ -10,7 +10,9 @@ export const login= async(email, password)=>{
         return response.data;
     }
     catch(error){
-        throw error.response?. data || "Login failed. Please try again.";
+        const errorMsg = error.response?.data?.error || error.response?.data?.message || "Login failed. Please try again.";
+        const err = new Error(errorMsg);
+        throw err;
     }
 }
 
@@ -24,7 +26,10 @@ const register= async(username, email, password)=>{
         return response.data;
     }
     catch(error){
-        throw error.response?. data || "Registration failed. Please try again.";
+        // Extract error message from backend response
+        const errorMsg = error.response?.data?.error || error.response?.data?.message || "Registration failed. Please try again.";
+        const err = new Error(errorMsg);
+        throw err;
     }
 }
 
