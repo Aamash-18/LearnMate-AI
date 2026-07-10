@@ -1,6 +1,6 @@
 import express from 'express';
 import Document from '../models/Document.js';
-import Flashcard from '../models/Flashcard.js';
+import Flashcard from '../models/FlashCard.js';
 import Quiz from '../models/Quiz.js';
 
 
