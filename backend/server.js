@@ -27,28 +27,40 @@ const app=express();
 connectDB();
 
 
+// CORS Configuration
 const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    "http://localhost:5173", // Local testing ke liye
-    "http://localhost:3000"
+    'http://localhost:3000',
+    'http://localhost:5173', // Vite default port
+    process.env.FRONTEND_URL || '',
 ];
 
 app.use(
     cors({
         origin: function (origin, callback) {
-            // Agar request bina origin ke ho (jaise Postman) ya allowed list mein ho
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
+            if (!origin) {
+                // Allow requests without origin (mobile apps, Postman)
+                return callback(null, true);
             }
+            
+            // Check if origin is in allowed list
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+            
+            // Allow any Vercel deployment
+            if (origin.endsWith('.vercel.app')) {
+                return callback(null, true);
+            }
+            
+            // Deny other origins
+            callback(new Error('Not allowed by CORS'));
         },
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true
+        credentials: true,
+        optionsSuccessStatus: 200
     })
 );
-
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
