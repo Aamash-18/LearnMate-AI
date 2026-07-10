@@ -14,6 +14,7 @@ const DocumentsDetailPage = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [document, setDocument] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
   const [activeTab, setActiveTab] = useState("Content");
 
   useEffect(() => {
@@ -22,8 +23,13 @@ const DocumentsDetailPage = () => {
       try {
         const data = await documentService.getDocumentById(id);
         setDocument(data);
-        console.log(data);
-        console.log(document);
+        // Fetch signed or direct file URL for viewer
+        try {
+          const url = await documentService.getDocumentFileUrl(id);
+          setPdfUrl(url);
+        } catch (err) {
+          console.error("Failed to fetch document file url", err);
+        }
       } catch (error) {
         toast.error("Failed to load Document");
       } finally {
@@ -36,11 +42,23 @@ const DocumentsDetailPage = () => {
   const getPdfUrl = () => {
     if (!document?.filePath) return null;
     const filePath = document.filePath;
-    if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
-      return filePath;
-    }
-    const baseUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
-    return `${baseUrl}${filePath.startsWith("/") ? "" : "/"}${filePath}`;
+
+    // If it's already an absolute URL (Cloudinary or other), return as-is
+    if (/^https?:\/\//i.test(filePath)) return filePath;
+
+    // Protocol-relative URL (e.g. //res.cloudinary.com/...) -> prepend current protocol
+    if (/^\/\//.test(filePath)) return `${window.location.protocol}${filePath}`;
+
+    // Use Vite env var when available (set VITE_API_URL in frontend environment)
+    const baseUrl =
+      import.meta.env.VITE_API_URL ||
+      window?.location?.origin ||
+      "http://localhost:8000";
+
+    // Normalize slashes and return full URL
+    const cleanBase = baseUrl.replace(/\/$/, "");
+    const cleanPath = filePath.replace(/^\//, "");
+    return `${cleanBase}/${cleanPath}`;
   };
 
   const renderContent = () => {
@@ -48,14 +66,14 @@ const DocumentsDetailPage = () => {
     if (!document || !document.filePath)
       return <div className="p-4 text-slate-500">Document not found</div>;
 
-    const pdfUrl = getPdfUrl();
+    const resolvedUrl = pdfUrl || getPdfUrl();
     return (
       <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
         {/* Header section with Link */}
         <div className="flex justify-between items-center mb-4">
           <span className="font-medium text-slate-700">Document Viewer</span>
           <a
-            href={pdfUrl}
+            href={resolvedUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 text-sm font-medium"
@@ -67,7 +85,7 @@ const DocumentsDetailPage = () => {
         {/* PDF Iframe container with border */}
         <div className="w-full h-[700px] border border-slate-200 rounded-lg overflow-hidden bg-gray-50">
           <iframe
-            src={pdfUrl}
+            src={resolvedUrl}
             title="Document Viewer"
             className="w-full h-full"
             frameBorder="0"
