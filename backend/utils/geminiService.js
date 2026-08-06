@@ -75,18 +75,40 @@ export const generateFlashcards = async (text, count = 10) => {
  * }>>}
  * */
 export const generateQuiz = async (text, numQuestions = 5) => {
-    const prompt = `Generate exactly ${numQuestions} multiple choice questions from the following text.
+   const prompt = `Generate exactly ${numQuestions} multiple choice questions from the following text.
 Format each question as:
 Q: [Question]
 O1: [Option 1]
 O2: [Option 2]
 O3: [Option 3]
 O4: [Option 4]
-C: [Correct option - exactly as written above]
+C: [The FULL TEXT of the correct option ONLY]
 E: [Brief explanation]
 D: [Difficulty: easy, medium, or hard]
 
-Separate questions with "---"
+IMPORTANT RULES:
+1. The correct answer (C:) MUST be the COMPLETE text of one of the four options.
+2. DO NOT write "O1:", "O2:", "O3:", or "O4:" in the C: field.
+3. DO NOT write "Option 1", "Option 2", etc.
+4. DO NOT write numbers such as "1", "2", "3", or "4".
+5. The text after C: must exactly match one of the option texts, character for character.
+6. Generate exactly four options for every question.
+7. Separate each question with "---" only.
+
+Q: What is the capital of France?
+O1: London
+O2: Paris
+O3: Berlin
+O4: Rome
+C: Paris
+E: Paris is the capital of France.
+D: easy
+
+Wrong Examples (DO NOT DO THIS):
+C: O2: Paris
+C: O2
+C: Option 2
+C: 2
 
 Text:
 ${text.substring(0, 15000)}`;
@@ -113,6 +135,7 @@ ${text.substring(0, 15000)}`;
                     options.push(trimmed.substring(3).trim());
                 } else if (trimmed.startsWith('C:')) {
                     correctAnswer = trimmed.substring(2).trim();
+                    correctAnswer = correctAnswer.replace(/^O\d:\s*/, "");
                 } else if (trimmed.startsWith('E:')) {
                     explanation = trimmed.substring(2).trim();
                 } else if (trimmed.startsWith('D:')) {
