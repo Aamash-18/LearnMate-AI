@@ -74,6 +74,9 @@ app.use('/api/flashcards', flashCardRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/progress', progressRoutes);
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 // 404 handler 
 app.use((req,res)=>{
     res.status(404).json({
