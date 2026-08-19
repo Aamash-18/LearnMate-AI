@@ -3,7 +3,7 @@ import Flashcard from '../models/FlashCard.js';
 import Quiz from '../models/Quiz.js';
 import ChatHistory from '../models/ChatHistory.js';
 import * as geminiService from '../utils/geminiService.js';
-import {findRelevantChunks} from '../utils/textChunker.js';
+import { findRelevantChunks } from '../utils/vectorSearch.js';
 
 //@desc Generate flashcards for a document
 //@route POST /api/ai/generate-flashcards
@@ -120,7 +120,13 @@ export const chat = async (req, res, next) => {
         if (!document) {
             return res.status(404).json({ success: false, message: 'Document not found or not ready', statusCode: 404 });
         }
-        const relevantChunks = findRelevantChunks(document.chunks, question, 3);
+
+        const relevantChunks = await findRelevantChunks(
+            document._id,
+            question,
+            3
+        );
+
         const chunksIndices = relevantChunks.map(c => c.chunkIndex);
         
         //Get or Create chat history for this document
@@ -169,7 +175,11 @@ export const explainConcept = async (req, res, next) => {
         if(!document){
             return res.status(404).json({success: false, message: 'Document not found or not ready', statusCode: 404    });
         }
-        const relevantChunks = findRelevantChunks(document.chunks, concept, 5);
+        const relevantChunks = await findRelevantChunks(
+            document._id,
+            concept,
+            5
+        );
         const context = relevantChunks.map(c => c.content).join('\n\n');
         const explanation = await geminiService.explainConcept(concept, context);
         res.status(200).json({ 

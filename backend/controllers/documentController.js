@@ -1,12 +1,16 @@
-import Document from "../models/Document.js";
-import FlashCard from '../models/FlashCard.js';
-import Quiz from '../models/Quiz.js';
-import {extractTextFromPDF} from '../utils/pdfParser.js';
-import {chunkText} from '../utils/textChunker.js';
 import fs from 'fs/promises';
 import mongoose from "mongoose";
 import cloudinary from "../config/cloudinary.js";
+
+import Document from "../models/Document.js";
+import DocumentChunk from "../models/DocumentChunk.js";
+import FlashCard from '../models/FlashCard.js';
+import Quiz from '../models/Quiz.js';
 import crypto from 'crypto';
+
+import {extractTextFromPDF} from '../utils/pdfParser.js';
+import {chunkText} from '../utils/textChunker.js';
+import { generateEmbedding } from '../utils/embeddingUtils.js';
 
 // @desc Upload a document
 // @route POST /api/documents/
@@ -74,33 +78,74 @@ export const uploadDocument=async(req,res,next)=>{
 };
 
 //Helper function to process the PDF
-const processPDF=async(documentId,filePath)=>{
-  try {
-     const pdfResult = await extractTextFromPDF(filePath);
-    
-    // 2. Object ke andar se 'text' string ko nikalein
-    // Agar direct string aati hai toh backup ke liye 'pdfResult' khud use ho jayega
-    const text = typeof pdfResult === 'object' && pdfResult.text ? pdfResult.text : pdfResult;
-    //Chunk the text into smaller pieces
-    const chunks=chunkText(text,500,50); // chunk size of 1000 characters
+const processPDF = async (documentId, filePath) => {
+    try {
 
-    //Update the document with extracted text and chunks
-    await Document.findByIdAndUpdate(documentId,{
-        extractedText:text,
-        chunks:chunks,
-        status:'ready'
-    });
-    console.log(`Document ${documentId} processed successfully`);
-    }catch (error) {
-            console.error(`Error processing document ${documentId}:`,error);
-            await Document.findByIdAndUpdate(documentId,{status:'failed'});
-    }
-    finally {
+        const pdfResult = await extractTextFromPDF(filePath);
+
+        const text =
+            typeof pdfResult === 'object' && pdfResult.text
+                ? pdfResult.text
+                : pdfResult;
+
+        // Create chunks from extracted text
+        const chunks = chunkText(text, 500, 50);
+
+        // Generate embedding and create separate DocumentChunk
+        // document for every chunk
+        const chunkDocuments = [];
+
+        for (const chunk of chunks) {
+
+            const embedding = await generateEmbedding(chunk.content);
+
+            chunkDocuments.push({
+                documentId: documentId,
+                content: chunk.content,
+                pageNumber: chunk.pageNumber,
+                chunkIndex: chunk.chunkIndex,
+                embedding: embedding
+            });
+        }
+
+        // Store all chunks in the DocumentChunk collection
+        if (chunkDocuments.length > 0) {
+            await DocumentChunk.insertMany(chunkDocuments);
+        }
+
+        // Update only the main Document
+        await Document.findByIdAndUpdate(documentId, {
+            extractedText: text,
+            status: 'ready'
+        });
+
+        console.log(
+            `Document ${documentId} processed successfully. ${chunkDocuments.length} chunks created.`
+        );
+
+    } catch (error) {
+
+        console.error(
+            `Error processing document ${documentId}:`,
+            error
+        );
+
+        await Document.findByIdAndUpdate(
+            documentId,
+            { status: 'failed' }
+        );
+
+    } finally {
+
         await fs.unlink(filePath).catch((err) => {
-            console.error(`Error deleting file ${filePath}:`, err);
+            console.error(
+                `Error deleting file ${filePath}:`,
+                err
+            );
         });
     }
 };
+
 
 // @desc Get all documents for the logged-in user
 // @route GET /api/documents
