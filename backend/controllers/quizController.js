@@ -1,8 +1,4 @@
-// router.get('/:documentId', getQuizes);
-// router.get('/quiz/:id', getQuizById);
-// router.post('/:id/submit', SubmitQuiz);
-// router.get('/:id/results', getQuizResults);
-// router.delete('/:id', deleteQuiz);
+
 
 import Quiz from '../models/Quiz.js';
 
@@ -27,7 +23,6 @@ export const getQuizes = async (req, res, next) => {
 
 // @desc Get quiz by ID
 // @route GET /api/quizzes/quiz/:id
-
 // @access Private
 export const getQuizById = async (req, res, next) => {
     try{
