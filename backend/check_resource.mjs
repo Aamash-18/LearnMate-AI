@@ -7,13 +7,10 @@ const publicId = process.argv[2];
 			const res = await cloudinary.api.resource(publicId, {resource_type:'raw'});
 			console.log(JSON.stringify(res, null, 2));
 
-			// Optionally output a signed private download URL if requested
 			if(process.argv[3] === 'signed'){
 				try{
-					// Infer format when possible to avoid empty format param
 					let format;
 					try{ const m = publicId && publicId.match(/\.([a-z0-9]+)$/i); if(m) format = m[1]; }catch(e){}
-					// Manually sign to avoid SDK adding empty params
 					const timestamp = Math.floor(Date.now() / 1000);
 					const stringToSign = `public_id=${publicId}&timestamp=${timestamp}`;
 					const crypto = await import('crypto');
@@ -22,7 +19,6 @@ const publicId = process.argv[2];
 					const apiKey = process.env.CLOUDINARY_API_KEY;
 					const signed = `https://api.cloudinary.com/v1_1/${cloudName}/image/download?public_id=${encodeURIComponent(publicId)}&timestamp=${timestamp}&signature=${signature}&api_key=${apiKey}`;
 					console.log('signed_url:', signed);
-					// Also try without extension if present
 					try{
 						const noExt = publicId.replace(/\.[a-z0-9]+$/i, '');
 						if(noExt !== publicId){
@@ -38,7 +34,6 @@ const publicId = process.argv[2];
 			return;
 		}
 
-		// List raw resources under the 'documents' folder to help locate the file
 		const list = await cloudinary.api.resources({ resource_type: 'raw', type: 'upload', prefix: 'documents', max_results: 50 });
 		console.log('Found resources count:', list.resources.length);
 		console.log(JSON.stringify(list.resources.map(r=>({ public_id: r.public_id, format: r.format, bytes: r.bytes, created_at: r.created_at })), null, 2));
