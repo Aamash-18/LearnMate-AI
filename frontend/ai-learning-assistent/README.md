@@ -1,16 +1,69 @@
-# React + Vite
+# LearnMate AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+LearnMate AI is an AI-powered learning platform that helps students learn and prepare more effectively. Users can upload study materials, ask questions, generate summaries, create flashcards, and practice quizzes.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React.js
+- Vite
+- Tailwind CSS
+- JavaScript
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Follow these steps to run the project locally.
 
-## Expanding the ESLint configuration
+**1. Clone the repository**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+git clone <your-repository-url>
+```
+
+**2. Go to the project directory**
+
+```bash
+cd <project-folder>
+```
+
+**3. Install dependencies**
+
+```bash
+npm install
+```
+
+**4. Start the development server**
+
+```bash
+npm run dev
+```
+
+The application will be available at the local URL shown in your terminal.
+
+## Available Scripts
+
+- `npm run dev` – Starts the development server.
+- `npm run build` – Builds the project for production.
+- `npm run preview` – Previews the production build.
+- `npm run lint` – Runs ESLint to check the code.
+
+## Project Structure
+
+```text
+src/
+├── assets/
+├── components/
+├── pages/
+├── services/
+├── App.jsx
+└── main.jsx
+```
+
+## Notes
+
+- The project uses Vite for a fast development experience.
+- Hot Module Replacement (HMR) is enabled during development.
+- ESLint is used to maintain code quality.
+
+## Future Improvements
+
+More features and improvements may be added as the project develops.
