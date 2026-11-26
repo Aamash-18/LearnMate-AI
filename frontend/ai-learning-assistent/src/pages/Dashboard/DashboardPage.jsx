@@ -57,7 +57,6 @@ const DashboardPage = () => {
     );
   }
 
-  // Stats mapped precisely to your API's exact response properties
   const stats = [
     {
       label: "Total Documents",
@@ -79,13 +78,11 @@ const DashboardPage = () => {
     },
   ];
 
-  // Helper function to turn ISO timestamps into local string values safely
   const formatActivityDate = (dateString) => {
     if (!dateString) return "Recent";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "Recent";
 
-    // Formats into DD/MM/YYYY, HH:MM:SS
     return (
       date.toLocaleDateString("en-GB") +
       ", " +
@@ -97,7 +94,6 @@ const DashboardPage = () => {
     );
   };
 
-  // Compile real activity arrays into a single unified timeline feed
   const combinedActivities = [];
 
   if (dashboardData.recentActivity?.documents) {
@@ -164,14 +160,12 @@ const DashboardPage = () => {
     }
   };
 
-  // Sort by latest action first
   combinedActivities.sort(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
   );
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-1 md:px-0">
-      {/* Header Titles */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
         <p className="text-sm text-slate-500 mt-0.5">
@@ -179,7 +173,6 @@ const DashboardPage = () => {
         </p>
       </div>
 
-      {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {stats.map((stat, idx) => (
           <div
@@ -203,7 +196,6 @@ const DashboardPage = () => {
         ))}
       </div>
 
-      {/* Unified Recent Activity Section Card exactly mirroring image_a0eadf.jpg */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm flex flex-col overflow-hidden">
         <div className="p-5 border-b border-slate-100 flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-50 text-slate-700 flex items-center justify-center rounded-xl border border-slate-100">
@@ -214,7 +206,6 @@ const DashboardPage = () => {
           </h2>
         </div>
 
-        {/* List Frame area */}
         <div className="p-5 space-y-4">
           {combinedActivities.length > 0 ? (
             combinedActivities.map((activity) => (
@@ -242,7 +233,6 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
-                {/* View Link Action Trigger */}
                 <button
                   type="button"
                   onClick={() => handleActivityView(activity)}
