@@ -2,7 +2,6 @@ import React from "react";
 import { FileText, BookOpen, BrainCircuit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Helper to format file size
 const formatFileSize = (bytes) => {
   if (!bytes) return "0 Bytes";
   const k = 1024;
@@ -12,7 +11,7 @@ const formatFileSize = (bytes) => {
 };
 
 const DocumentCard = ({ document, onDelete }) => {
-  const navigate = useNavigate(); // Naam 'navigatee' se 'navigate' kar diya standard practice ke liye
+  const navigate = useNavigate(); 
 
   const handleNavigate = () => {
     navigate(`/documents/${document._id}`);
@@ -23,7 +22,6 @@ const DocumentCard = ({ document, onDelete }) => {
       onClick={handleNavigate}
       className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-emerald-200 transition-all duration-300 ease-out cursor-pointer"
     >
-      {/* Icon, Title & Delete Button */}
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex items-start gap-4">
           <div className="p-3 bg-emerald-50 rounded-xl">
@@ -36,8 +34,6 @@ const DocumentCard = ({ document, onDelete }) => {
             </p>
           </div>
         </div>
-
-        {/* FIX: yaha e.stopPropagation() add kiya hai */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -49,7 +45,6 @@ const DocumentCard = ({ document, onDelete }) => {
         </button>
       </div>
 
-      {/* Action Tags */}
       <div className="flex gap-2 mb-6">
         <div className="flex items-center gap-1 bg-purple-50 text-purple-700 px-2 py-1 rounded-md text-xs font-medium">
           <BookOpen size={14} /> {document.flashCardsCount || 0} Flashcards
@@ -59,7 +54,6 @@ const DocumentCard = ({ document, onDelete }) => {
         </div>
       </div>
 
-      {/* Footer / Meta */}
       <div className="pt-4 border-t border-slate-50 text-slate-400 text-xs">
         <span>
           🕒 Uploaded {new Date(document.createdAt).toLocaleDateString()}
