@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -43,13 +44,9 @@ const LoginPage = () => {
   };
 
   return (
-    // Poora page center karne ke liye flexbox aur light gray background
     <div className="min-h-screen w-full bg-slate-50 flex flex-col justify-center items-center p-4 antialiased">
-      {/* Main Login Card - Exact width, shadow aur border-radius jaisa image me hai */}
       <div className="w-full max-w-[440px] bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-10 flex flex-col items-center">
-        {/* Header - Logo, Title aur Subtitle */}
         <div className="flex flex-col items-center text-center mb-8">
-          {/* Green Brain Logo Icon Box */}
           <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-5">
             <BrainCircuit size={28} className="text-white" strokeWidth={2} />
           </div>
@@ -62,15 +59,12 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Form Container */}
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
-          {/* Email Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
               Email
             </label>
             <div className="relative">
-              {/* Icon Container with Dynamic Focus Color */}
               <div
                 className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
                   focusedField === "email"
@@ -93,13 +87,11 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
               Password
             </label>
             <div className="relative">
-              {/* Icon Container with Dynamic Focus Color */}
               <div
                 className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
                   focusedField === "password"
@@ -127,7 +119,7 @@ const LoginPage = () => {
               {error}
             </div>
           )}
-          {/* Submit Button (Sign in ->) */}
+
           <button
             type="submit"
             disabled={loading}
@@ -138,7 +130,6 @@ const LoginPage = () => {
           </button>
         </form>
 
-        {/* Footer Link (Don't have an account? Sign up) */}
         <div className="mt-8 text-sm text-slate-500">
           Don't have an account?{" "}
           <Link
