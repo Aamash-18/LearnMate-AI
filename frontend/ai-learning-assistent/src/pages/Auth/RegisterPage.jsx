@@ -5,12 +5,10 @@ import { BrainCircuit, User, Mail, Lock, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 
 const RegisterPage = () => {
-  // Form states
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // UI states
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
@@ -22,7 +20,6 @@ const RegisterPage = () => {
     setError("");
     setLoading(true);
 
-    // Frontend validation
     if (username.trim().length < 3) {
       setError("Username must be at least 3 characters long");
       setLoading(false);
@@ -43,14 +40,12 @@ const RegisterPage = () => {
     }
 
     try {
-      // Backend ko data bhej rahe hain jaisa authService me defined hai
       const response = await authService.register(username, email, password);
 
       console.log("Registration Response:", response);
 
       toast.success("Account created successfully!");
 
-      // Account banne ke baad user ko login page par bhej rahe hain
       navigate("/login");
     } catch (error) {
       console.error("Register Page Error:", error);
@@ -62,13 +57,9 @@ const RegisterPage = () => {
   };
 
   return (
-    // Background and full-screen centering layout
     <div className="min-h-screen w-full bg-slate-50 flex flex-col justify-center items-center p-4 antialiased">
-      {/* Main Register Card Container */}
       <div className="w-full max-w-[440px] bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-10 flex flex-col items-center">
-        {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-8">
-          {/* Green AI Brain Icon */}
           <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-5">
             <BrainCircuit size={28} className="text-white" strokeWidth={2} />
           </div>
@@ -81,15 +72,12 @@ const RegisterPage = () => {
           </p>
         </div>
 
-        {/* Register Form */}
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
-          {/* Username Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
               Username
             </label>
             <div className="relative">
-              {/* Dynamic Icon Color based on focus */}
               <div
                 className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
                   focusedField === "username"
@@ -116,7 +104,6 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          {/* Email Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
               Email
@@ -148,7 +135,6 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-slate-800 tracking-wide uppercase">
               Password
@@ -180,14 +166,12 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          {/* Error Message Alert */}
           {error && (
             <div className="text-sm bg-red-50 text-red-600 px-4 py-2 rounded-xl border border-red-100">
               {error}
             </div>
           )}
 
-          {/* Create Account Button */}
           <button
             type="submit"
             disabled={loading}
@@ -198,7 +182,6 @@ const RegisterPage = () => {
           </button>
         </form>
 
-        {/* Footer Redirect Link */}
         <div className="mt-8 text-sm text-slate-500">
           Already have an account?{" "}
           <Link
