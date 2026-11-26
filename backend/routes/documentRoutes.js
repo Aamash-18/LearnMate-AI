@@ -15,7 +15,6 @@ import { streamDocument } from '../controllers/documentController.js';
 
 const router=express.Router();
 
-// Dev-only debug route to generate a signed download URL by publicId
 if (process.env.NODE_ENV !== 'production') {
     router.get('/debug/file-url', async (req, res) => {
         const publicId = req.query.publicId;
