@@ -10,10 +10,8 @@ export const findRelevantChunks = async (documentId, query, topK = 3) => {
         throw new Error('Query is required');
     }
 
-    // Generate embedding for user's question
     const queryEmbedding = await generateEmbedding(query);
 
-    // Search only inside the requested document's chunks
     const results = await mongoose.connection
         .collection('documentchunks')
         .aggregate([
