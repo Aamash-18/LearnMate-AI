@@ -10,7 +10,6 @@ const axiosInstance = axios.create({
     },
 });
 
-// Retry configurations
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY_MS = 2000;
 
