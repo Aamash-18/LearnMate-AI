@@ -2,7 +2,6 @@ import React from "react";
 
 const Spinner = () => {
   return (
-    // Outer container jo spinner ko center me rakhta hai
     <div className="flex items-center justify-center p-8">
       <svg
         className="animate-spin h-6 w-6 text-[#00d492]"
@@ -20,7 +19,6 @@ const Spinner = () => {
           strokeWidth="3"
         />
 
-        {/* 2. Aage ka ghumne wala dhar-dar arc (Moving Blade) */}
         <path
           className="opacity-75"
           fill="currentColor"
