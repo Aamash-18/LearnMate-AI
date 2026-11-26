@@ -13,7 +13,6 @@ import {
 
 const router=express.Router();
 
-// validate middleware 
 
 const registerValidation=[
     body('username')
@@ -39,11 +38,9 @@ const loginValidation=[
     .withMessage('Password is required')
 ]   
 
-//  public routes 
 router.post('/register',registerValidation,register);
 router.post('/login',loginValidation,login);
 
-//protected routes
 router.get('/profile',protect,getProfile);
 router.put('/profile',protect,updateProfile);
 router.put('/change-password',protect,changePassword);  
