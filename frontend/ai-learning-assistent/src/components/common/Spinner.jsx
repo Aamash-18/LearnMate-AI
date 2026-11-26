@@ -9,7 +9,6 @@ const Spinner = () => {
         fill="none"
         viewBox="0 0 24 24"
       >
-        {/* 1. Peeche ka halka poora circle (Background Track) */}
         <circle
           className="opacity-25"
           cx="12"
