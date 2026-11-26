@@ -79,7 +79,7 @@ const quizSchema = new mongoose.Schema({
     timestamps: true
 })
 
-//Index for fast qureries 
+
 quizSchema.index({userId:1,documentId:1});
 
 const Quiz=mongoose.model('Quiz',quizSchema);
