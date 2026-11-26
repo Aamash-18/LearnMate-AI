@@ -46,7 +46,6 @@ export const uploadDocument=async(req,res,next)=>{
         // console.log("File URL", fileUrl);
         const publicId = uploadResult.public_id;
 
-        //Create Document entry in the database
         const document=await Document.create({
             userId: req.user.id,
             title,
@@ -57,7 +56,6 @@ export const uploadDocument=async(req,res,next)=>{
             status: 'processing'
         });
 
-        // Process the document in the background
         processPDF(document._id,req.file.path).catch(async(error)=>{
             console.error('Error processing PDF:',error);
             await Document.findByIdAndUpdate(document._id,{status:'failed'});
@@ -77,7 +75,6 @@ export const uploadDocument=async(req,res,next)=>{
     }
 };
 
-//Helper function to process the PDF
 const processPDF = async (documentId, filePath) => {
     try {
 
@@ -88,11 +85,8 @@ const processPDF = async (documentId, filePath) => {
                 ? pdfResult.text
                 : pdfResult;
 
-        // Create chunks from extracted text
         const chunks = chunkText(text, 500, 50);
 
-        // Generate embedding and create separate DocumentChunk
-        // document for every chunk
         const chunkDocuments = [];
 
         for (const chunk of chunks) {
@@ -108,12 +102,10 @@ const processPDF = async (documentId, filePath) => {
             });
         }
 
-        // Store all chunks in the DocumentChunk collection
         if (chunkDocuments.length > 0) {
             await DocumentChunk.insertMany(chunkDocuments);
         }
 
-        // Update only the main Document
         await Document.findByIdAndUpdate(documentId, {
             extractedText: text,
             status: 'ready'
@@ -189,14 +181,13 @@ export const getDocument=async(req,res,next)=>{
             statusCode:404
         });
     }   
-    //get count of flashcards and quizzes, matching both ObjectId and string IDs
     const idMatch = { $in: [document._id, document._id.toString()] };
     const flashCardsCount = await FlashCard.countDocuments({ documentId: idMatch });
     const quizCount = await Quiz.countDocuments({ documentId: idMatch });
-    //update last accessed date
+   
     document.lastAccessed = new Date();
     await document.save();
-    //combine document data with flashcards and quiz count
+    
     const documentData = document.toObject();
     documentData.flashCardsCount = flashCardsCount;
     documentData.quizCount = quizCount;
@@ -287,7 +278,7 @@ export const getDocumentFileUrl = async (req, res, next) => {
                     console.warn('HEAD check failed for signed URL', headErr && headErr.message ? headErr.message : headErr);
                 }
 
-                // Fallback: if we have a direct filePath (secure_url), return it
+                
                 if (document.filePath && /^https?:\/\//i.test(document.filePath)) {
                     return res.status(200).json({ success: true, url: document.filePath });
                 }
@@ -298,12 +289,12 @@ export const getDocumentFileUrl = async (req, res, next) => {
             }
         }
 
-        // If filePath is an absolute URL, return it directly
+        
         if (document.filePath && /^https?:\/\//i.test(document.filePath)) {
             return res.status(200).json({ success: true, url: document.filePath });
         }
 
-        // Otherwise construct a backend-served URL for local files
+        
         const baseUrl = process.env.BASE_URL || (req.protocol + '://' + req.get('host'));
         const cleanBase = baseUrl.replace(/\/$/, '');
         const cleanPath = (document.filePath || '').replace(/^\//, '');
@@ -338,14 +329,11 @@ export const streamDocument = async (req, res, next) => {
         if (contentLength) res.setHeader('Content-Length', contentLength);
         res.setHeader('Content-Type', contentType);
 
-        // Stream the response body (web stream) to Node response
         const { Readable } = await import('stream');
         if (fetchRes.body?.getReader) {
-            // WHATWG ReadableStream -> Node Readable
             const nodeStream = Readable.fromWeb(fetchRes.body);
             nodeStream.pipe(res);
         } else if (fetchRes.body && typeof fetchRes.body.pipe === 'function') {
-            // Node stream
             fetchRes.body.pipe(res);
         } else {
             const buf = await fetchRes.arrayBuffer();
