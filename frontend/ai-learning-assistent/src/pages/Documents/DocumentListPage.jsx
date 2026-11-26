@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Trash2, FileText, X, Loader2 } from "lucide-react";
-import { toast } from "react-hot-toast"; // Ensure you have this installed
+import { toast } from "react-hot-toast"; 
 
 import documentService from "../../services/documentService";
 import Button from "../../components/common/Button";
@@ -12,13 +12,11 @@ const DocumentListPage = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Upload Modal State
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploading, setUploading] = useState(false);
 
-  // Delete Modal State
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -150,8 +148,7 @@ const DocumentListPage = () => {
         {renderContent()}
       </div>
 
-      {/* write here  code for upload model */}
-      {/* Upload Modal */}
+
       {isUploadModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-md p-8 relative shadow-2xl">
@@ -236,9 +233,6 @@ const DocumentListPage = () => {
         </div>
       )}
 
-      {/* Delete Model  */}
-
-      {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && selectedDoc && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-sm p-8 relative shadow-2xl text-center">
