@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Play, BarChart3, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +30,6 @@ const QuizCard = ({ quiz, onDelete }) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-      {/* Header with score badge */}
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -41,7 +41,6 @@ const QuizCard = ({ quiz, onDelete }) => {
         </span>
       </div>
 
-      {/* Meta information */}
       <div className="space-y-2 mb-4 text-sm text-gray-600">
         <p>CREATED {formatDate(quiz.createdAt)}</p>
         <p className="font-medium text-gray-700">
@@ -49,7 +48,6 @@ const QuizCard = ({ quiz, onDelete }) => {
         </p>
       </div>
 
-      {/* Action buttons */}
       <div className="flex gap-3">
         {isCompleted ? (
           <button
