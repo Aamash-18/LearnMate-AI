@@ -8,13 +8,12 @@ export const getDashboard = async (req, res, next) => {
     try{
         const userId = req.user._id;
 
-        //Get Counts
+       
         const totalDocuments = await Document.countDocuments({ userId });
         const totalFlashcardSets = await Flashcard.countDocuments({ userId });
         const totalQuizzes = await Quiz.countDocuments({ userId });
         const completedQuizzes = await Quiz.countDocuments({ userId, completed: {$ne : null} });
 
-        //Get Flashcard Statistics
         const flashcardSets= await Flashcard.find({userId});
         let totalFlashcards=0;
         let reviewedFlashcards=0;
@@ -25,25 +24,20 @@ export const getDashboard = async (req, res, next) => {
             starredFlashcards += set.cards.filter(c => c.isStarred).length;
         });
 
-        //Get Quiz Statistics
         const quizzes= await Quiz.find({userId, completed: {$ne : null} });
         const averageScore = quizzes.length > 0 ? Math.round(quizzes.reduce((sum, quiz) => sum + quiz.score, 0) / quizzes.length) : 0;
 
-        //Recent Activity
-        //Recent Documents
         const recentDocuments= await Document.find({userId})
         .sort({ lastAccessed : -1})
         .limit(5)
         .select('title fileName lastAccessed status');
 
-        //Recent Quizzes
         const recentQuizzes= await Quiz.find({userId})
         .sort({createdAt: -1})
         .limit(5)
         .populate('documentId','title')
         .select('title score totalQuestions completedAt');
 
-        // Recent Flashcard activity: reviewed cards sorted by lastReviewed
         const flashcardSetsWithReview = await Flashcard.find({
           userId,
           'cards.reviewCount': { $gt: 0 },
@@ -73,7 +67,6 @@ export const getDashboard = async (req, res, next) => {
 
         const topRecentFlashcards = recentFlashcards.slice(0, 5);
 
-        //study Streak(Simplified in production , track daily activity)
         const studyStreak= Math.floor(Math.random()*7)+1;
         res.status(200).json({
             success: true,
