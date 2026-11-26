@@ -8,8 +8,6 @@ import { fileURLToPath } from 'url';
 import { error } from 'console';
 import connectDB from "./config/db.js";
 import errorHandler from "./middleware/errorHandler.js"
-//es6 modul __dirname alternative
-
 import authRoutes from './routes/authRoutes.js';
 import documentRoutes from './routes/documentRoutes.js';
 import flashCardRoutes from './routes/flashCardRoutes.js';
@@ -20,14 +18,11 @@ import progressRoutes from './routes/progressRoutes.js';
 const __filename=fileURLToPath(import.meta.url)
 const __dirname= path.dirname(__filename);
 
-//express app
 const app=express();
 
-//connect to MongoDB
 connectDB();
 
 
-// CORS Configuration
 const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5173', // Vite default port
@@ -64,10 +59,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-//static folder for uploads
-// Ye line ensure karegi ki /uploads path, uploads/documents folder ko point kare
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// Routes 
 app.use('/api/auth',authRoutes);
 app.use('/api/documents',documentRoutes)
 app.use('/api/flashcards', flashCardRoutes);
@@ -77,7 +69,6 @@ app.use('/api/progress', progressRoutes);
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
-// 404 handler 
 app.use((req,res)=>{
     res.status(404).json({
         success: false,
@@ -88,7 +79,6 @@ app.use((req,res)=>{
 
 app.use(errorHandler);
 
-//start server
 const PORT=process.env.PORT || 8000;
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}`);
