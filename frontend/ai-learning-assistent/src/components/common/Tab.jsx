@@ -3,7 +3,6 @@ import React from "react";
 const Tab = ({ tabs, activeTab, setActiveTab }) => {
   return (
     <div>
-      {/* Tab Navigation */}
       <nav className="flex space-x-6 border-b border-slate-200 relative">
         {tabs.map((tab) => (
           <button
@@ -16,15 +15,12 @@ const Tab = ({ tabs, activeTab, setActiveTab }) => {
             }`}
           >
             <span>{tab.label}</span>
-            {/* Active Indicator */}
             {activeTab === tab.name && (
               <div className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-emerald-600 rounded-full" />
             )}
           </button>
         ))}
       </nav>
-      {/* Tab Content */}
-      {/* Tab Content */}
       <div className="mt-6">
         {tabs.map((tab) => {
           if (tab.name === activeTab) {
