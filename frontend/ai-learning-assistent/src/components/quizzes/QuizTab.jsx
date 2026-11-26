@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -16,7 +17,6 @@ function QuizTab({ documentId }) {
   const [isGeneratingModeOpen, setIsGeneratingModelOpen] = useState(false);
   const [numQuestions, setNumQuestions] = useState();
 
-  // for deleting Modal
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isDeletingModelOpen, setIsDeletingModelOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -52,9 +52,7 @@ function QuizTab({ documentId }) {
       toast.success("Quiz Generated Successfully");
       setIsGeneratingModelOpen(false);
       setNumQuestions(5);
-      // Add a small delay to ensure the quiz is saved on the backend
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Fetch quizzes and wait for it to complete
       await fetchQuizzes();
     } catch (error) {
       toast.error(error.message || "Failed to generate Quiz");
@@ -111,7 +109,7 @@ function QuizTab({ documentId }) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={1.5}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a2 2 0 01.707.293l5.414 5.414a2 2 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
               </div>
@@ -138,7 +136,6 @@ function QuizTab({ documentId }) {
 
   return (
     <div className="w-full">
-      {/* Header with Generate Button */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Quizzes</h2>
         <Button
@@ -150,10 +147,8 @@ function QuizTab({ documentId }) {
         </Button>
       </div>
 
-      {/* Quizzes Grid */}
       {renderQuizContent()}
 
-      {/* Generate Quiz Modal */}
       <div
         className={`fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 ${
           isGeneratingModeOpen ? "" : "hidden"
@@ -215,7 +210,6 @@ function QuizTab({ documentId }) {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={isDeletingModelOpen}
         onConfirm={handleConfirmDelete}
