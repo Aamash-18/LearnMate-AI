@@ -9,7 +9,6 @@ const testVectorSearch = async () => {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('MongoDB connected');
 
-        // Find a ready document
         const document = await Document.findOne({
             status: 'ready'
         });
@@ -21,12 +20,10 @@ const testVectorSearch = async () => {
         console.log('Testing document:', document.title);
         console.log('Document ID:', document._id.toString());
 
-        // Test query
         const query = 'What is DBMS';
 
         console.log('Query:', query);
 
-        // Generate embedding for the question
         const queryEmbedding = await generateEmbedding(query);
 
         console.log(
@@ -40,10 +37,8 @@ const testVectorSearch = async () => {
     });
 
 console.log('Chunks for this document:', chunkCount);
-        // Current document ID
         const documentId = document._id;
 
-        // DIRECT MongoDB VECTOR SEARCH
         const results = await mongoose.connection
             .collection('documentchunks')
             .aggregate([
