@@ -18,14 +18,12 @@ const FlashCardTab = ({ documentId }) => {
   useEffect(() => {
     if (!documentId) return;
     fetchSets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId]);
 
   const fetchSets = async () => {
     setLoading(true);
     try {
       const resp = await flashcardService.getFlashcardsForDocument(documentId);
-      // service may return data directly or wrapped, handle both
       const sets = resp?.data || resp || [];
       setFlashcardSets(Array.isArray(sets) ? sets : []);
     } catch (err) {
@@ -129,7 +127,6 @@ const FlashCardTab = ({ documentId }) => {
       </div>
     );
 
-  // No sets view
   if (!flashcardSets || flashcardSets.length === 0) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
@@ -172,7 +169,6 @@ const FlashCardTab = ({ documentId }) => {
     );
   }
 
-  // If a set is selected for viewing show viewer
   if (viewingSetId && selectedSet) {
     if (!selectedSet.cards || selectedSet.cards.length === 0) {
       return (
@@ -320,7 +316,6 @@ const FlashCardTab = ({ documentId }) => {
     );
   }
 
-  // List of sets view
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between mb-4">
