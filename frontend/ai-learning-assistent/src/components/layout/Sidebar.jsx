@@ -1,3 +1,4 @@
+
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -8,7 +9,7 @@ import {
   X,
   BookOpen,
   User,
-  LogOut, // Added LogOut icon from lucide-react
+  LogOut,
 } from "lucide-react";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -29,7 +30,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* Backdrop overlay for mobile viewport */}
       <div
         className={`fixed inset-0 bg-slate-900/40 z-40 transition-opacity duration-300 md:hidden ${
           isSidebarOpen
@@ -40,13 +40,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
         aria-hidden="true"
       ></div>
 
-      {/* Main Sidebar Panel */}
       <aside
         className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 flex flex-col z-50 transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Sidebar Header Section */}
         <div className="h-16 px-6 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-[#00b289] text-white flex items-center justify-center rounded-lg">
@@ -57,7 +55,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </h1>
           </div>
 
-          {/* Close button inside mobile menu */}
           <button
             onClick={toggleSidebar}
             className="p-1 text-slate-500 hover:bg-slate-100 rounded-md md:hidden"
@@ -67,7 +64,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           </button>
         </div>
 
-        {/* Sidebar Navigation Content */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navLinks.map((link) => {
             const IconComponent = link.icon;
@@ -93,7 +89,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           })}
         </nav>
 
-        {/* Action Bottom Section with Logout Button */}
         <div className="p-4 border-t border-slate-200 shrink-0">
           <button
             onClick={() => {
